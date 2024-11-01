@@ -1,5 +1,9 @@
 ---
 theme: default
+aspectRatio: 16/9
+# real width of the canvas, unit in px
+canvasWidth: 980
+
 background: https://cover.sli.dev
 title: Generative AI For The Rest Of Us
 info: |
@@ -153,26 +157,24 @@ A wireframe or a screenshot to  a Expo react native app with an embedded chat to
 
 ---
 
-# The Basics.
+### The Basics.
 
-## Generatetext -
+#### Generate Text
 
-The generateText function can be used to generate text based on the input prompt.
+<div class="text-sm">
+You can generate text using the <span class="font-bold text-emerald-300">generateText</span> function. This function is ideal for non-interactive use cases where you need to write text (e.g. drafting email or summarizing web pages) and for agents that use tools.
+</div>
 
-The very basic AI chat app ever
-
-<div class="flex items-center gap-4">
-<div>
-
-```ts {all|1|2|5|7|7-8|13|all}
+````md magic-move {lines: true}
+```tsx
 import { generateText } from "ai";
-import { groq } from "@ai-sdk/groq";
+import { openai } from "@ai-sdk/openai";
 
 export async function POST(req: Request) {
   const { prompt }: { prompt: string } = await req.json();
 
   const { text } = await generateText({
-    model: groq("llama-3-70B-versatile"),
+    model: openai("gpt-4"),
     system: "You are a helpful assistant.",
     prompt,
   });
@@ -181,11 +183,7 @@ export async function POST(req: Request) {
 }
 ```
 
-</div>
-<div class="text-xs>
-## Client code
-
-```ts {all|1|2|5|7|7-8|13|all}
+```tsx
 import { useState } from "react";
 
 export default function Page() {
@@ -198,7 +196,7 @@ export default function Page() {
         onClick={async () => {
           setIsLoading(true);
 
-          await fetch("/chat", {
+          await fetch("/api/completion", {
             method: "POST",
             body: JSON.stringify({
               prompt: "Why is the sky blue?",
@@ -218,376 +216,271 @@ export default function Page() {
     </div>
   );
 }
-
-```
-
-</div>
-</div>
-
-## Server code
-
-- Generatetext - The generateText function can be used to generate text based on the input prompt.
-
-```ts {all|1|2|5|7|7-8|13|all}
-import { generateText } from "ai";
-import { groq } from "@ai-sdk/groq";
-
-export async function POST(req: Request) {
-  const { prompt }: { prompt: string } = await req.json();
-
-  const { text } = await generateText({
-    model: groq("llama-3-70B-versatile"),
-    system: "You are a helpful assistant.",
-    prompt,
-  });
-
-  return Response.json({ text });
-}
-```
-
----
-
-layout: two-cols
-layoutClass: gap-16
-
----
-
-# Table of contents
-
-You can use the `Toc` component to generate a table of contents for your slides:
-
-```html
-<Toc minDepth="1" maxDepth="1"></Toc>
-```
-
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc v-click minDepth="1" maxDepth="2"></Toc>
-
----
-
-layout: image-right
-image: https://cover.sli.dev
-
----
-
-# Code
-
-Use code snippets and get the highlighting directly, and even types hover!
-
-```ts {all|5|7|7-8|13|all}
-import { generateText } from "ai";
-import { groq } from "@ai-sdk/groq";
-
-export async function POST(req: Request) {
-  const { prompt }: { prompt: string } = await req.json();
-
-  const { text } = await generateText({
-    model: groq("llama-3-70B-versatile"),
-    system: "You are a helpful assistant.",
-    prompt,
-  });
-
-  return Response.json({ text });
-}
-```
-
-<arrow v-click="[7-8]" x1="350" y1="310" x2="195" y2="334" color="#953" width="2" arrowSize="1" />
-
-<!-- This allow you to embed external code blocks -->
-
-<!-- Footer -->
-
-[Learn more](https://sli.dev/features/line-highlighting)
-
-<!-- Inline style -->
-<style>
-.footnotes-sep {
-  @apply mt-5 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
-
----
-
-## level: 2
-
-# Shiki Magic Move
-
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
-
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
-
-````md magic-move {lines: true}
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: "John Doe",
-  books: [
-    "Vue 2 - Advanced Guide",
-    "Vue 3 - Basic Guide",
-    "Vue 4 - The Mystery",
-  ],
-});
-```
-
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: "John Doe",
-        books: [
-          "Vue 2 - Advanced Guide",
-          "Vue 3 - Basic Guide",
-          "Vue 4 - The Mystery",
-        ],
-      },
-    };
-  },
-};
-```
-
-```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: "John Doe",
-      books: [
-        "Vue 2 - Advanced Guide",
-        "Vue 3 - Basic Guide",
-        "Vue 4 - The Mystery",
-      ],
-    },
-  }),
-};
-```
-
-Non-code blocks are ignored.
-
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: "John Doe",
-  books: [
-    "Vue 2 - Advanced Guide",
-    "Vue 3 - Basic Guide",
-    "Vue 4 - The Mystery",
-  ],
-};
-</script>
 ```
 ````
 
 ---
 
-# Components
+## StreamText
 
-<div grid="~ cols-2 gap-4">
-<div>
+<div class="text-sm">
+Depending on your model and prompt, it can take a large language model (LLM) up to a minute to finish generating it's response. This delay can be unacceptable for interactive use cases such as chatbots or real-time applications, where users expect immediate responses.
+AI SDK Core provides the streamText function which simplifies streaming text from LLMs
+</div>
 
-You can use Vue components directly inside your slides.
+````md magic-move {lines: true}
+```ts
+import { streamText } from "ai";
+import { groq } from "@ai-sdk/groq";
 
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
+export async function POST(req: Request) {
+  const { prompt }: { prompt: string } = await req.json();
 
-```html
-<Counter :count="10" />
+  const result = await streamText({
+    model: groq("llama-3-70B-versatile"),
+    system: "You are a helpful assistant.",
+    prompt,
+  });
+
+  return result.toDataStreamResponse();
+}
 ```
 
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
+```tsx
+import { useCompletion } from "ai/react";
 
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
+export default function Page() {
+  const { completion, complete } = useCompletion({
+    api: "/api/completion",
+  });
 
+  return (
+    <div>
+      <div
+        onClick={async () => {
+          await complete("Why is the sky blue?");
+        }}
+      >
+        Generate
+      </div>
+
+      {completion}
+    </div>
+  );
+}
+```
+````
+
+---
+
+## GenerateObject
+
+<div class="text-sm">
+The generateObject generates structured data from a prompt. The schema is also used to validate the generated data, ensuring type safety and correctness.
 </div>
-<div>
 
-```html
-<Tweet id="1390115482657726468" />
+````md magic-move {lines: true}
+```ts
+// Generate Object - generate Objects from a zod schema
+import { generateObject } from "ai";
+import { groq } from "@ai-sdk/groq";
+import { z } from "zod";
+
+export async function POST(req: Request) {
+  const { prompt }: { prompt: string } = await req.json();
+
+  const result = await generateObject({
+    model: groq("llama-3-70B-versatile"),
+    system: "You generate three notifications for a messages app.",
+    prompt,
+    schema: z.object({
+      notifications: z.array(
+        z.object({
+          name: z.string().describe("Name of a fictional person."),
+          message: z.string().describe("Do not use emojis or links."),
+          minutesAgo: z.number(),
+        })
+      ),
+    }),
+  });
+
+  return result.toJsonResponse();
+}
 ```
 
-<Tweet id="1390115482657726468" scale="0.65" />
+```tsx
+import { useState } from "react";
 
+export default function Page() {
+  const [generation, setGeneration] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  return (
+    <div>
+      <div
+        onClick={async () => {
+          setIsLoading(true);
+
+          await fetch("/api/completion", {
+            method: "POST",
+            body: JSON.stringify({
+              prompt: "Messages during finals week.",
+            }),
+          }).then((response) => {
+            response.json().then((json) => {
+              setGeneration(json.object);
+              setIsLoading(false);
+            });
+          });
+        }}
+      >
+        Generate
+      </div>
+
+      {isLoading ? "Loading..." : <pre>{JSON.stringify(generation)}</pre>}
+    </div>
+  );
+}
+```
+````
+
+---
+
+### StreamObject
+
+<div class="text-sm">
+The streamObject generates structured data from a prompt. The schema is also used to validate the generated data, ensuring type safety and correctness.
 </div>
-</div>
+
+````md magic-move {lines: true}
+```ts
+// Generate Object - generate Objects from a zod schema
+
+import { groq } from "@ai-sdk/groq";
+import { streamObject } from "ai";
+import { notificationSchema } from "./schema";
+
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
+
+export async function POST(req: Request) {
+  const context = await req.json();
+
+  const result = await streamObject({
+    model: groq("llama-3-70B-versatile"),
+    schema: notificationSchema,
+    prompt:
+      `Generate 3 notifications for a messages app in this context:` + context,
+  });
+
+  return result.toTextStreamResponse();
+}
+```
+
+```tsx
+"use client";
+
+import { experimental_useObject as useObject } from "ai/react";
+import { notificationSchema } from "./api/use-object/schema";
+
+export default function Page() {
+  const { object, submit } = useObject({
+    api: "/api/use-object",
+    schema: notificationSchema,
+  });
+
+  return (
+    <div>
+      <button onClick={() => submit("Messages during finals week.")}>
+        Generate notifications
+      </button>
+
+      {object?.notifications?.map((notification, index) => (
+        <div key={index}>
+          <p>{notification?.name}</p>
+          <p>{notification?.message}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+````
+
+---
+
+# Tools
+
+A `tool` is a function that can be called by the model to perform a specific task. You can think of a tool like a program you give to the model that it can run as and when it deems necessary.
+A tool usually has 3 elements
+
+- description - a short description of what the tool does
+- parameters - a schema for the parameters that the tool takes
+- execute - the function that the tool runs
+
+---
+
+## Tool Example
+
+```ts {1-3|7-17|all}
+import { generateText, tool } from "ai";
+import { groq } from "@ai-sdk/groq";
+
+const { text } = await generateText({
+  model: groq("llama-3.1-70b-versatile"),
+  prompt: "What is the weather like today?",
+  tools: {
+    weather: tool({
+      description: "Get the weather in a location",
+      parameters: z.object({
+        location: z.string().describe("The location to get the weather for"),
+      }),
+      execute: async ({ location }) => ({
+        location,
+        temperature: 72 + Math.floor(Math.random() * 21) - 10,
+      }),
+    }),
+  },
+});
+```
 
 <!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
+we duuh
 -->
 
 ---
 
-## class: px-20
+# RAG(Retrieval Augmented Generation)
 
-# Themes
+## What is RAG?
 
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
+RAG stands for retrieval augmented generation. In simple terms, RAG is the process of providing a Large Language Model (LLM) with specific information relevant to the prompt.
 
-<div grid="~ cols-2 gap-2" m="t-2">
+## Why is RAG important?
 
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/guide/theme-addon#use-theme) and
-check out the [Awesome Themes Gallery](https://sli.dev/resources/theme-gallery).
+While LLMs are powerful, the information they can reason on is restricted to the data they were trained on. This problem becomes apparent when asking an LLM for information outside of their training data, like proprietary data or common knowledge that has occurred after the model’s training cutoff. RAG solves this problem by fetching information relevant to the prompt and then passing that to the model as context.
 
 ---
 
-# Clicks Animations
+# Basic RAG Example(Dont ever do this )
 
-You can add `v-click` to elements to add a click animation.
+```ts
+import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
-<div v-click>
+export async function POST(req: Request) {
+  const { prompt }: { prompt: string } = await req.json();
 
-This shows up when you click the slide:
+  const result = await streamText({
+    model: openai("gpt-4"),
+    system: `You are a helpful assistant. If the user asks you anything about love and relationships, you will respond with \baby dont hurt me no more\n\ You can use your own intuition on other things blud.`,
 
-```html
-<div v-click>This shows up when you click the slide.</div>
-```
+    prompt,
+  });
 
-</div>
-
-<br>
-
-<v-click>
-
-The <span v-mark.red="3"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="4">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
-
-</v-click>
-
-<div mt-20 v-click>
-
-[Learn more](https://sli.dev/guide/animations#click-animation)
-
-</div>
-
----
-
-# Motions
-
-Motion animations are powered by [@vueuse/motion](https://motion.vueuse.org/), triggered by `v-motion` directive.
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }"
-  :click-3="{ x: 80 }"
-  :leave="{ x: 1000 }"
->
-  Slidev
-</div>
-```
-
-<div class="w-60 relative">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-square.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-circle.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-triangle.png"
-      alt=""
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
+  return result.toDataStreamResponse();
 }
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 30, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn more](https://sli.dev/guide/animations.html#motion)
-
-</div>
+```
 
 ---
 
@@ -754,6 +647,36 @@ square: -162,0,0,0
 
 ---
 
+dragPos:
+square: -162,0,0,0
+
+---
+
+dragPos:
+square: -162,0,0,0
+
+---
+
+dragPos:
+square: -162,0,0,0
+
+---
+
+dragPos:
+square: -162,0,0,0
+
+---
+
+dragPos:
+square: -162,0,0,0
+
+---
+
+dragPos:
+square: -162,0,0,0
+
+---
+
 # Draggable Elements
 
 Double-click on the draggable elements to edit their positions.
@@ -777,7 +700,7 @@ Double-click on the draggable elements to edit their positions.
 </v-drag>
 ```
 
-<v-drag pos="566,93,261,\_,-15"undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined>
+<v-drag pos="566,93,261,\_,-15"undefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefinedundefined>
 
   <div text-center text-3xl border border-main rounded>
     Double-click me!
